@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Customer;
@@ -38,6 +39,12 @@ Route::prefix('admin')
             Route::post('/', [Admin\ManajemenUserController::class, 'store'])->name('store');
             Route::delete('/{user}', [Admin\ManajemenUserController::class, 'destroy'])->name('destroy');
         });
+
+        // 🆕 MENU BARU: Validasi & Approval Peminjaman (Mobil/Ruang) untuk Admin
+        Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
+            Route::get('/', [Admin\PeminjamanAdminController::class, 'index'])->name('index');
+            Route::patch('/{id}/status', [Admin\PeminjamanAdminController::class, 'updateStatus'])->name('update-status');
+        });
     });
 
 // ─── Customer Routes ─────────────────────────────────────
@@ -56,5 +63,12 @@ Route::prefix('customer')
         Route::prefix('pengajuan')->name('pengajuan.')->group(function () {
             Route::get('/', [Customer\PengajuanController::class, 'index'])->name('index');
             Route::post('/', [Customer\PengajuanController::class, 'store'])->name('store');
+        });
+
+        // 🆕 MENU BARU: Request Peminjaman Mobil & Ruang untuk Customer
+        // Parameter {jenis} nanti otomatis menangkap data 'mobil' atau 'ruang'
+        Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
+            Route::get('/{jenis}', [Customer\PeminjamanController::class, 'index'])->name('index');
+            Route::post('/', [Customer\PeminjamanController::class, 'store'])->name('store');
         });
     });
