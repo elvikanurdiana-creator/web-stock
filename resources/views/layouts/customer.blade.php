@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body class="bg-bps-gray font-[Plus_Jakarta_Sans] flex h-screen overflow-hidden">
@@ -24,7 +25,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-bps-blue-light uppercase tracking-widest leading-none">BPS</p>
+                    <p class="text-xs font-bold text-bps-blue-light uppercase tracking-widest leading-none">BPS Provinsi Jawa Timur</p>
                     <p class="text-sm font-bold leading-tight">Inventaris</p>
                 </div>
             </div>
@@ -38,8 +39,8 @@
             </div>
         </div>
 
-        <nav class="flex-1 px-4 py-6 space-y-1">
-            <p class="text-xs font-bold text-bps-blue-light/60 uppercase tracking-widest px-3 mb-3">Menu</p>
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <p class="text-xs font-bold text-bps-blue-light/60 uppercase tracking-widest px-3 mb-3">Menu Utama</p>
 
             <a href="{{ route('customer.dashboard') }}"
                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('customer.dashboard') ? 'bg-bps-green text-white shadow-lg' : 'text-bps-blue-light hover:bg-white/10 hover:text-white' }}">
@@ -56,7 +57,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                 </svg>
-                <span class="text-sm font-semibold">Katalog</span>
+                <span class="text-sm font-semibold">Katalog Barang</span>
             </a>
 
             <a href="{{ route('customer.pengajuan.index') }}"
@@ -66,6 +67,25 @@
                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 <span class="text-sm font-semibold">Pengajuan Saya</span>
+            </a>
+
+            {{-- MENU BARU CUSTOMER: Peminjaman Mobil --}}
+            <a href="{{ route('customer.peminjaman.index', 'mobil') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->is('customer/peminjaman/mobil*') ? 'bg-bps-green text-white shadow-lg' : 'text-bps-blue-light hover:bg-white/10 hover:text-white' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10M21 16v-4a2 2 0 00-2-2h-6M13 10h4l2 3h4" />
+                </svg>
+                <span class="text-sm font-semibold">Peminjaman Mobil</span>
+            </a>
+
+            {{-- MENU BARU CUSTOMER: Peminjaman Ruang --}}
+            <a href="{{ route('customer.peminjaman.index', 'ruang') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->is('customer/peminjaman/ruang*') ? 'bg-bps-green text-white shadow-lg' : 'text-bps-blue-light hover:bg-white/10 hover:text-white' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5" />
+                </svg>
+                <span class="text-sm font-semibold">Peminjaman Ruang</span>
             </a>
         </nav>
 
@@ -94,13 +114,60 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <button class="relative p-2 rounded-xl text-gray-500 hover:bg-gray-100 transition cursor-pointer">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-bps-green rounded-full"></span>
-                </button>
+                
+                {{-- 💡 DROPDOWN LONCENG NOTIFIKASI CUSTOMER --}}
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" @click.outside="open = false" class="relative p-2 rounded-xl text-gray-500 hover:bg-gray-100 transition cursor-pointer focus:outline-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        
+                        {{-- Badge Merah Angka Notifikasi Baru --}}
+                        @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
+                            <span class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white ring-2 ring-white">
+                                {{ auth()->user()->unreadNotifications->count() }}
+                            </span>
+                        @endif
+                    </button>
+
+                    {{-- Isi Balon List Dropdown Notifikasi --}}
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 scale-95"
+                         x-transition:enter-end="transform opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="transform opacity-100 scale-100"
+                         x-transition:leave-end="transform opacity-0 scale-95"
+                         class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 max-h-96 overflow-y-auto"
+                         style="display: none;">
+                        
+                        <div class="px-4 py-2 font-bold text-xs text-gray-700 border-b border-gray-100 uppercase tracking-wider flex justify-between items-center">
+                            <span>Notifikasi Pengajuan</span>
+                            @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
+                                <span class="text-[10px] bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full font-bold">Baru</span>
+                            @endif
+                        </div>
+                        
+                        @if(auth()->check())
+                            @forelse(auth()->user()->unreadNotifications as $notification)
+                                <a href="{{ isset($notification->data['url']) ? $notification->data['url'] : '#' }}" 
+                                   class="block px-4 py-3 hover:bg-gray-50 text-xs text-gray-600 border-b border-gray-50 transition-all">
+                                    <p class="font-semibold text-gray-800 leading-normal">{{ $notification->data['pesan'] ?? 'Ada pembaruan status pengajuan.' }}</p>
+                                    <span class="text-[10px] text-gray-400 mt-1 block flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        {{ $notification->created_at->diffForHumans() }}
+                                    </span>
+                                </a>
+                            @empty
+                                <div class="px-4 py-8 text-center text-xs text-gray-400 space-y-2">
+                                    <svg class="w-8 h-8 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                                    <p>Kotak masuk Anda kosong</p>
+                                </div>
+                            @endforelse
+                        @endif
+                    </div>
+                </div>
 
                 <div class="flex items-center gap-2 pl-3 border-l border-gray-200">
                     <div class="w-8 h-8 rounded-xl bg-bps-green flex items-center justify-center">

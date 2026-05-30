@@ -9,6 +9,9 @@ class Peminjaman extends Model
 {
     use HasFactory;
 
+    // 💡 Mengatasi error: Mengunci nama tabel agar Laravel tidak mencari 'peminjamen'
+    protected $table = 'peminjamans';
+
     protected $fillable = [
         'user_id',
         'nama_item',

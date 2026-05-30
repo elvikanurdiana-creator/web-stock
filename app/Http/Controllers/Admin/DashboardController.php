@@ -1,15 +1,18 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\TransaksiRequest;
 use App\Models\User;
+use App\Models\Peminjaman; // 💡 Memanggil model Peminjaman untuk merekap data fasilitas
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        // 1. Statistik Inventaris Barang & User (Bawaan Lama Admin)
         $stats = [
             'total_barang'     => Barang::count(),
             'total_users'      => User::where('role', 'customer')->count(),
@@ -17,6 +20,15 @@ class DashboardController extends Controller
             'disetujui'        => TransaksiRequest::where('status', 'disetujui')->count(),
         ];
 
-        return view('admin.dashboard', compact('stats'));
+        // 2. 🆕 Statistik Peminjaman Fasilitas Masuk (Mobil & Ruang)
+        $peminjamanStats = [
+            'total'     => Peminjaman::count(),
+            'pending'   => Peminjaman::where('status', 'pending')->count(),
+            'disetujui' => Peminjaman::where('status', 'disetujui')->count(),
+            'ditolak'   => Peminjaman::where('status', 'ditolak')->count(),
+        ];
+
+        // Mengirimkan variabel $stats dan $peminjamanStats ke view dashboard milik admin
+        return view('admin.dashboard', compact('stats', 'peminjamanStats'));
     }
 }

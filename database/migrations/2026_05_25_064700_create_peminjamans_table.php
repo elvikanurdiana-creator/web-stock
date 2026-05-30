@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('peminjamans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->uuid('user_id')->constrained()->onDelete('cascade');
             $table->string('nama_item'); // Contoh: "Avanza Veloz" atau "Ruang Rapat Utama"
             $table->enum('jenis_fasilitas', ['mobil', 'ruang']); 
             $table->dateTime('waktu_mulai'); // Menyimpan tanggal sekaligus jam mulai

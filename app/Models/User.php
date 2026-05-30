@@ -1,14 +1,17 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Notifications\Notifiable; // 💡 TAMBAHKAN INI
 use App\Models\TransaksiRequest;
 use App\Models\Riwayat;
 
 class User extends Authenticatable
 {
-    use HasUuids;
+    // 💡 TAMBAHKAN Notifiable di dalam list use trait bawah ini
+    use HasUuids, Notifiable; 
 
     protected $table = 'users';
     protected $primaryKey = 'id';
