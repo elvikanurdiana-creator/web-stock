@@ -5,68 +5,91 @@ use App\Http\Controllers\Admin;
 use App\Http\Controllers\Customer;
 use Illuminate\Support\Facades\Route;
 
-// ─── Auth ───────────────────────────────────────────────
-Route::get('/', fn() => redirect()->route('login'));
-
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+// ─── 🔑 HALAMAN UTAMA / LOGIN ──────────────────────────────────
+Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ─── Admin Routes ────────────────────────────────────────
+// ─── 🌐 PORTAL MONITORING KALENDER ─────────────────────────────
+Route::get('/monitoring', [AuthController::class, 'showLanding'])->name('monitoring');
+
+
+// ─── 👨‍💼 ADMIN ROUTES ────────────────────────────────────────────────
 Route::prefix('admin')
     ->name('admin.')
     ->middleware('role.admin')
     ->group(function () {
 
-        Route::get('/dashboard', [Admin\DashboardController::class, 'index'])
-            ->name('dashboard');
+        Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
 
+        // 📦 KELOMPOK ROUTE BARANG ADMIN
         Route::prefix('barang')->name('barang.')->group(function () {
             Route::get('/', [Admin\BarangController::class, 'index'])->name('index');
             Route::post('/', [Admin\BarangController::class, 'store'])->name('store');
             Route::put('/{barang}', [Admin\BarangController::class, 'update'])->name('update');
             Route::delete('/{barang}', [Admin\BarangController::class, 'destroy'])->name('destroy');
+            Route::post('/import', [Admin\BarangController::class, 'importExcel'])->name('import');
         });
 
+        // 📝 VERIFIKASI BATCH PER ITEM & UPDATE STATUS (SISI ADMIN)
         Route::prefix('transaksi')->name('transaksi.')->group(function () {
             Route::get('/', [Admin\TransaksiRequestController::class, 'index'])->name('index');
-            Route::patch('/{transaksi}/status', [Admin\TransaksiRequestController::class, 'updateStatus'])
-                ->name('update-status');
+            Route::patch('/item/{detail_id}/{status}', [Admin\TransaksiRequestController::class, 'updateItemStatus'])->name('item.status');
+            Route::get('/{id}/periksa', [Admin\TransaksiRequestController::class, 'review'])->name('review'); 
+            Route::post('/{id}/simpan', [Admin\TransaksiRequestController::class, 'saveVerification'])->name('save'); 
+            Route::patch('/{id}/status', [Admin\TransaksiRequestController::class, 'updateStatusViaModal'])->name('update-status-modal');
+            Route::patch('/{transaksi}/massal', [Admin\TransaksiRequestController::class, 'updateStatus'])->name('update-status');
         });
 
+        // 📄 ROUTE CETAK PDF SISI ADMIN
+        Route::get('/pengajuan/{id}/cetak-pdf', [Admin\TransaksiRequestController::class, 'cetakPdf'])->name('pengajuan.cetak-pdf');
+
+        // 👥 MANAJEMEN DATA PENGGUNA
         Route::prefix('manajemen-user')->name('manajemen-user.')->group(function () {
             Route::get('/', [Admin\ManajemenUserController::class, 'index'])->name('index');
             Route::post('/', [Admin\ManajemenUserController::class, 'store'])->name('store');
+            Route::put('/{id}', [Admin\ManajemenUserController::class, 'update'])->name('update');
             Route::delete('/{user}', [Admin\ManajemenUserController::class, 'destroy'])->name('destroy');
         });
 
-        // 🆕 MENU BARU: Validasi & Approval Peminjaman (Mobil/Ruang) untuk Admin
+        // 🚗 VALIDASI & APPROVAL PEMINJAMAN (MOBIL/RUANG)
         Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
             Route::get('/', [Admin\PeminjamanAdminController::class, 'index'])->name('index');
             Route::patch('/{id}/status', [Admin\PeminjamanAdminController::class, 'updateStatus'])->name('update-status');
         });
     });
 
-// ─── Customer Routes ─────────────────────────────────────
+
+// ─── 🧑‍💻 CUSTOMER ROUTES ───────────────────────────────────────────
 Route::prefix('customer')
     ->name('customer.')
     ->middleware('role.customer')
     ->group(function () {
 
-        Route::get('/dashboard', [Customer\DashboardController::class, 'index'])
-            ->name('dashboard');
+        Route::get('/dashboard', [Customer\DashboardController::class, 'index'])->name('dashboard');
 
         Route::prefix('katalog')->name('katalog.')->group(function () {
             Route::get('/', [Customer\KatalogController::class, 'index'])->name('index');
         });
 
-        Route::prefix('pengajuan')->name('pengajuan.')->group(function () {
-            Route::get('/', [Customer\PengajuanController::class, 'index'])->name('index');
-            Route::post('/', [Customer\PengajuanController::class, 'store'])->name('store');
+        // 💡 FIXED: Menambahkan route pengajuan.index agar sesuai dengan folder views/customer/pengajuan/index.blade.php
+        Route::get('/pengajuan', [Customer\PengajuanController::class, 'index'])->name('pengajuan.index');
+
+        // 🛒 SISTEM KERANJANG BELANJA BARANG
+        Route::prefix('keranjang')->name('keranjang.')->group(function () {
+            Route::get('/', [Customer\PengajuanController::class, 'index'])->name('index'); 
+            Route::post('/add/{barang_id}', [Customer\PengajuanController::class, 'store'])->name('add'); 
+            Route::patch('/update/{id}', [Customer\PengajuanController::class, 'update'])->name('update'); 
+            Route::delete('/delete/{id}', [Customer\PengajuanController::class, 'destroy'])->name('delete'); 
+            Route::post('/checkout', [Customer\PengajuanController::class, 'checkout'])->name('checkout'); 
         });
 
-        // 🆕 MENU BARU: Request Peminjaman Mobil & Ruang untuk Customer
-        // Parameter {jenis} nanti otomatis menangkap data 'mobil' atau 'ruang'
+        Route::get('/riwayat-pengajuan', [Customer\PengajuanController::class, 'history'])->name('history');
+
+        // 📄 ROUTE CETAK PDF SISI CUSTOMER
+        Route::get('/pengajuan/{id}/cetak-pdf', [Customer\PengajuanController::class, 'cetakPdf'])->name('pengajuan.cetak-pdf');
+
+        // 🏢 REQUEST PEMINJAMAN MOBIL & RUANG
         Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
             Route::get('/{jenis}', [Customer\PeminjamanController::class, 'index'])->name('index');
             Route::post('/', [Customer\PeminjamanController::class, 'store'])->name('store');

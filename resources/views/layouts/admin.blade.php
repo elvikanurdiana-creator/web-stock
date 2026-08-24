@@ -13,31 +13,31 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="bg-bps-gray font-[Plus_Jakarta_Sans] flex h-screen overflow-hidden">
+<body class="bg-bps-cream-bg font-[Plus_Jakarta_Sans] flex h-screen overflow-hidden">
 
     {{-- SIDEBAR --}}
     <aside id="sidebar"
-        class="w-64 bg-bps-blue-dark text-white flex flex-col flex-shrink-0 shadow-2xl transition-all duration-300">
+        class="w-64 bg-white/85 backdrop-blur-xl text-slate-700 flex flex-col flex-shrink-0 border-r border-slate-200/70 shadow-[0_20px_50px_-25px_rgba(15,23,42,0.2)] transition-all duration-300">
         {{-- Brand --}}
-        <div class="px-6 py-5 border-b border-bps-blue-light">
+        <div class="px-6 py-5 border-b border-slate-200/70">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-200/80">
                     <svg class="w-6 h-6 text-bps-orange" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M3 3h4v8H3zm6-4h4v12H9zm6 2h4v10h-4zm-14 15h20v2H1z" />
                     </svg>
                 </div>
-                <div>
-                    <p class="text-xs font-bold text-[#93c5fd] uppercase tracking-widest leading-none">BPS</p>
-                    <p class="text-sm font-bold leading-tight">Inventaris</p>
+                <div class="min-w-0">
+                    <p class="text-[11px] font-bold text-bps-orange uppercase tracking-[0.01em] leading-tight">BPS Provinsi Jawa Timur</p>
+                    <p class="text-[10px] font-medium leading-tight text-slate-500 mt-0.5">Sistem Manajemen Persediaan</p>
                 </div>
             </div>
         </div>
 
         {{-- Role Badge --}}
-        <div class="px-6 py-3 bg-bps-orange/20 border-b border-bps-blue-light">
+        <div class="px-6 py-3 bg-white/70 border-b border-slate-200/70">
             <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-bps-green animate-pulse"></div>
-                <span class="text-xs font-semibold text-bps-orange uppercase tracking-wider">
+                <div class="w-2 h-2 rounded-full bg-bps-orange animate-pulse"></div>
+                <span class="text-xs font-semibold text-bps-blue-dark uppercase tracking-wider">
                     {{ session('auth_user.role', 'User') }}
                 </span>
             </div>
@@ -45,105 +45,56 @@
 
         {{-- Navigation --}}
         <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            <p class="text-xs font-bold text-[#93c5fd]/60 uppercase tracking-widest px-3 mb-3">Menu Utama</p>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest px-3 mb-3">Menu Utama</p>
 
-            {{-- ─── MENU KHUSUS ADMIN ─── --}}
-            @if(session('auth_user.role') === 'admin')
-                <a href="{{ route('admin.dashboard') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group {{ request()->routeIs('admin.dashboard') ? 'bg-[#f47920] text-white shadow-lg' : 'text-[#bfdbfe] hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    <span class="text-sm font-semibold">Dashboard Admin</span>
-                </a>
+            {{-- ─── MENU UTAMA KHUSUS ADMIN ─── --}}
+            <a href="{{ route('admin.dashboard') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group {{ request()->routeIs('admin.dashboard') ? 'bg-bps-orange text-white shadow-sm border border-transparent' : 'text-slate-500 hover:bg-white hover:text-bps-orange' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="text-sm font-semibold">Dashboard Admin</span>
+            </a>
 
-                <a href="{{ route('admin.barang.index') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('admin.barang.*') ? 'bg-[#f47920] text-white shadow-lg' : 'text-[#bfdbfe] hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    <span class="text-sm font-semibold">Manajemen Barang</span>
-                </a>
+            <a href="{{ route('admin.manajemen-user.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('admin.manajemen-user.*') ? 'bg-bps-orange text-white shadow-sm border border-transparent' : 'text-slate-500 hover:bg-white hover:text-bps-orange' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span class="text-sm font-semibold">Manajemen User</span>
+            </a>
 
-                <a href="{{ route('admin.transaksi.index') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('admin.transaksi.*') ? 'bg-[#f47920] text-white shadow-lg' : 'text-[#bfdbfe] hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    <span class="text-sm font-semibold">Transaksi Barang</span>
-                </a>
+            <a href="{{ route('admin.barang.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('admin.barang.*') ? 'bg-bps-orange text-white shadow-sm border border-transparent' : 'text-slate-500 hover:bg-white hover:text-bps-orange' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <span class="text-sm font-semibold">Manajemen Barang</span>
+            </a>
 
-                {{-- MENU BARU ADMIN: Approval Booking Mobil & Ruang --}}
-                <a href="{{ route('admin.peminjaman.index') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('admin.peminjaman.*') ? 'bg-[#f47920] text-white shadow-lg' : 'text-[#bfdbfe] hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="text-sm font-semibold">Persetujuan Peminjaman</span>
-                </a>
+            <a href="{{ route('admin.transaksi.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('admin.transaksi.*') ? 'bg-bps-orange text-white shadow-sm border border-transparent' : 'text-slate-500 hover:bg-white hover:text-bps-orange' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <span class="text-sm font-semibold">Transaksi Barang</span>
+            </a>
 
-                <a href="{{ route('admin.manajemen-user.index') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('admin.manajemen-user.*') ? 'bg-[#f47920] text-white shadow-lg' : 'text-[#bfdbfe] hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <span class="text-sm font-semibold">Manajemen User</span>
-                </a>
-            @endif
-
-            {{-- ─── MENU KHUSUS CUSTOMER ─── --}}
-            @if(session('auth_user.role') === 'customer')
-                <a href="{{ route('customer.dashboard') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('customer.dashboard') ? 'bg-[#f47920] text-white shadow-lg' : 'text-[#bfdbfe] hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    <span class="text-sm font-semibold">Dashboard</span>
-                </a>
-
-                <a href="{{ route('customer.katalog.index') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('customer.katalog.*') ? 'bg-[#f47920] text-white shadow-lg' : 'text-[#bfdbfe] hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                    </svg>
-                    <span class="text-sm font-semibold">Katalog Barang</span>
-                </a>
-
-                <a href="{{ route('customer.pengajuan.index') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('customer.pengajuan.*') ? 'bg-[#f47920] text-white shadow-lg' : 'text-[#bfdbfe] hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    <span class="text-sm font-semibold">Request Barang</span>
-                </a>
-
-                {{-- MENU BARU CUSTOMER: Peminjaman Mobil --}}
-                <a href="{{ route('customer.peminjaman.index', 'mobil') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ (request()->is('customer/peminjaman/mobil')) ? 'bg-[#f47920] text-white shadow-lg' : 'text-[#bfdbfe] hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10M21 16v-4a2 2 0 00-2-2h-6M13 10h4l2 3h4" />
-                    </svg>
-                    <span class="text-sm font-semibold">Peminjaman Mobil</span>
-                </a>
-
-                {{-- MENU BARU CUSTOMER: Peminjaman Ruang --}}
-                <a href="{{ route('customer.peminjaman.index', 'ruang') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ (request()->is('customer/peminjaman/ruang')) ? 'bg-[#f47920] text-white shadow-lg' : 'text-[#bfdbfe] hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5" />
-                    </svg>
-                    <span class="text-sm font-semibold">Peminjaman Ruang</span>
-                </a>
-            @endif
+            <a href="{{ route('admin.peminjaman.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 {{ request()->routeIs('admin.peminjaman.*') ? 'bg-bps-orange text-white shadow-sm border border-transparent' : 'text-slate-500 hover:bg-white hover:text-bps-orange' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="text-sm font-semibold">Persetujuan Peminjaman</span>
+            </a>
         </nav>
 
         {{-- Logout --}}
-        <div class="p-4 border-t border-bps-blue-light">
+        <div class="p-4 border-t border-slate-200/70">
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#bfdbfe] hover:bg-red-500/20 hover:text-red-300 transition-all cursor-pointer text-sm font-semibold">
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-all cursor-pointer text-sm font-semibold">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -158,7 +109,7 @@
     <div class="flex-1 flex flex-col overflow-hidden">
         {{-- NAVBAR --}}
         <header
-            class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 flex-shrink-0 shadow-sm">
+            class="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-200/70 flex items-center justify-between px-6 flex-shrink-0 shadow-sm">
             <div class="flex items-center gap-3">
                 <button id="sidebarToggle" class="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,18 +125,35 @@
 
             <div class="flex items-center gap-3">
                 
-                {{-- 💡 DROPDOWN LONCENG NOTIFIKASI ADMIN --}}
+                {{-- ─── 💡 AKUMULASI NOTIFIKASI BARANG & FASILITAS PENDING ─── --}}
+                @php
+                    // 1. Ambil data pengajuan permintaan barang pending
+                    $pendingRequests = \App\Models\TransaksiRequest::with('user')
+                                        ->where('status', 'pending')
+                                        ->latest()
+                                        ->get();
+
+                    // 2. Ambil data pengajuan peminjaman fasilitas pending (Mobil/Ruang)
+                    $pendingFasilitas = \App\Models\Peminjaman::with('user')
+                                        ->where('status', 'pending')
+                                        ->latest()
+                                        ->get();
+
+                    // 3. Gabungkan total kuantitas hitungan untuk badge alarm
+                    $totalPendingCount = $pendingRequests->count() + $pendingFasilitas->count();
+                @endphp
+
                 <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" @click.outside="open = false" class="relative p-2 rounded-xl text-gray-500 hover:bg-gray-100 transition cursor-pointer focus:outline-none">
+                    <button @click="open = !open" @click.outside="open = false" class="relative p-2 rounded-xl text-gray-500 hover:bg-slate-100 transition cursor-pointer focus:outline-none">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
                         
-                        {{-- Bulatan Jingga Jumlah Permintaan Baru --}}
-                        @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
-                            <span class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-bps-orange text-[10px] font-bold text-white ring-2 ring-white">
-                                {{ auth()->user()->unreadNotifications->count() }}
+                        {{-- Bulatan Jingga Akumulasi Semua Pengajuan Pending --}}
+                        @if($totalPendingCount > 0)
+                            <span class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-bps-orange text-[10px] font-bold text-white ring-2 ring-white animate-pulse">
+                                {{ $totalPendingCount }}
                             </span>
                         @endif
                     </button>
@@ -203,34 +171,52 @@
                         
                         <div class="px-4 py-2 font-bold text-xs text-gray-700 border-b border-gray-100 uppercase tracking-wider flex justify-between items-center">
                             <span>Permintaan Masuk</span>
-                            @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
-                                <span class="text-[10px] bg-amber-50 text-bps-orange px-2 py-0.5 rounded-full font-bold">New</span>
+                            @if($totalPendingCount > 0)
+                                <span class="text-[10px] bg-amber-50 text-bps-orange px-2 py-0.5 rounded-full font-bold">Baru</span>
                             @endif
                         </div>
                         
-                        @if(auth()->check())
-                            @forelse(auth()->user()->unreadNotifications as $notification)
-                                <a href="{{ isset($notification->data['url']) ? $notification->data['url'] : '#' }}" 
-                                   class="block px-4 py-3 hover:bg-gray-50 text-xs text-gray-600 border-b border-gray-50 transition-all">
-                                    <p class="font-semibold text-gray-800 leading-normal">{{ $notification->data['pesan'] ?? 'Ada pengajuan peminjaman baru.' }}</p>
-                                    <span class="text-[10px] text-gray-400 mt-1 block flex items-center gap-1">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        {{ $notification->created_at->diffForHumans() }}
-                                    </span>
-                                </a>
-                            @empty
-                                <div class="px-4 py-8 text-center text-xs text-gray-400 space-y-2">
-                                    <svg class="w-8 h-8 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
-                                    <p>Belum ada pengajuan masuk</p>
-                                </div>
-                            @endforelse
+                        {{-- 📦 RENDER NOTIFIKASI PERMINTAAN BARANG KELOMPOK --}}
+                        @foreach($pendingRequests as $req)
+                            <a href="{{ route('admin.transaksi.index') }}" 
+                               class="block px-4 py-3 hover:bg-gray-50 text-xs text-gray-600 border-b border-gray-50 transition-all">
+                                <p class="font-semibold text-gray-800 leading-normal">
+                                    📦 Ada permintaan barang baru dari <span class="text-bps-orange font-bold">{{ $req->user->username ?? $req->user->name ?? 'User' }}</span>.
+                                </p>
+                                <span class="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    {{ $req->created_at->diffForHumans() }}
+                                </span>
+                            </a>
+                        @endforeach
+
+                        {{-- 🚗 / 🏢 RENDER NOTIFIKASI PEMINJAMAN FASILITAS --}}
+                        @foreach($pendingFasilitas as $pinjam)
+                            <a href="{{ route('admin.peminjaman.index') }}" 
+                               class="block px-4 py-3 hover:bg-gray-50 text-xs text-gray-600 border-b border-gray-50 transition-all">
+                                <p class="font-semibold text-gray-800 leading-normal">
+                                    {{ $pinjam->jenis_fasilitas === 'mobil' ? '🚗' : '🏢' }} Pengajuan pinjam <span class="font-bold text-bps-blue-dark capitalize">{{ $pinjam->jenis_fasilitas }}</span> baru dari <span class="text-bps-orange font-bold">{{ $pinjam->user->username ?? 'User' }}</span>.
+                                </p>
+                                <span class="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    {{ $pinjam->created_at->diffForHumans() }}
+                                </span>
+                            </a>
+                        @endforeach
+
+                        {{-- JIKA KEDUANYA KOSONG --}}
+                        @if($totalPendingCount === 0)
+                            <div class="px-4 py-8 text-center text-xs text-gray-400 space-y-2">
+                                <svg class="w-8 h-8 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                                <p>Belum ada pengajuan masuk</p>
+                            </div>
                         @endif
                     </div>
                 </div>
 
                 {{-- Profile --}}
                 <div class="flex items-center gap-2 pl-3 border-l border-gray-200">
-                    <div class="w-8 h-8 rounded-xl bg-bps-blue-dark flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-xl bg-bps-orange flex items-center justify-center shadow-sm">
                         <span
                             class="text-white text-xs font-bold uppercase">{{ substr(session('auth_user.username', 'A'), 0, 1) }}</span>
                     </div>

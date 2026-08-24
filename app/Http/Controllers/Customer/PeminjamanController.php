@@ -50,16 +50,17 @@ class PeminjamanController extends Controller
         ]);
 
         // Cek Bentrok Jadwal
+        // Cek Bentrok Jadwal
         $bentrok = Peminjaman::where('nama_item', $request->nama_item)
-            ->where('jenis_fasilitas', $request->jenis_fasilitas)
-            ->where('status', 'disetujui')
-            ->where(function ($query) use ($request) {
-                $query->whereBetween('waktu_mulai', [$request->waktu_mulai, $request->waktu_selesai])
-                      ->orWhereBetween('walesai', [$request->waktu_mulai, $request->waktu_selesai]) // jika typo 'waktu_selesai' silakan sesuaikan kolommu
-                      ->orWhere(function ($q) use ($request) {
-                          $q->where('waktu_mulai', '<=', $request->waktu_mulai)
-                            ->where('waktu_selesai', '>=', $request->waktu_selesai);
-                      });
+        ->where('jenis_fasilitas', $request->jenis_fasilitas)
+        ->where('status', 'disetujui')
+        ->where(function ($query) use ($request) {
+            $query->whereBetween('waktu_mulai', [$request->waktu_mulai, $request->waktu_selesai])
+                    ->orWhereBetween('waktu_selesai', [$request->waktu_mulai, $request->waktu_selesai]) // 💡 FIX: Ubah 'walesai' jadi 'waktu_selesai'
+                    ->orWhere(function ($q) use ($request) {
+                    $q->where('waktu_mulai', '<=', $request->waktu_mulai)
+                        ->where('waktu_selesai', '>=', $request->waktu_selesai);
+                    });
             })->exists();
 
         if ($bentrok) {

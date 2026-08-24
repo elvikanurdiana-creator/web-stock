@@ -21,10 +21,15 @@ class PeminjamanAdminController extends Controller
             ->get()
             ->map(function ($item) {
                 return [
-                    'title' => '[Mobil] ' . $item->nama_item . ' (' . ($item->user->username ?? 'User') . ')',
-                    'start' => $item->waktu_mulai->format('Y-m-d\TH:i:s'),
-                    'end'   => $item->waktu_selesai->format('Y-m-d\TH:i:s'),
-                    'color' => '#0284c7', // Warna Biru khusus Mobil Dinas
+                    'title' => '🚗 ' . $item->nama_item,
+                    'start' => $item->waktu_mulai->toIso8601String(),
+                    'end'   => $item->waktu_selesai->toIso8601String(),
+                    'backgroundColor' => '#0284c7', // Warna Biru khusus Mobil Dinas
+                    // 💡 INJEKSI EXTENDED PROPS UNTUK TIPPY.JS
+                    'extendedProps' => [
+                        'keperluan' => $item->keperluan,
+                        'user'      => $item->user->username ?? 'Tidak Diketahui'
+                    ]
                 ];
             });
 
@@ -34,10 +39,15 @@ class PeminjamanAdminController extends Controller
             ->get()
             ->map(function ($item) {
                 return [
-                    'title' => '[Ruang] ' . $item->nama_item . ' (' . ($item->user->username ?? 'User') . ')',
-                    'start' => $item->waktu_mulai->format('Y-m-d\TH:i:s'),
-                    'end'   => $item->waktu_selesai->format('Y-m-d\TH:i:s'),
-                    'color' => '#f59e0b', // Warna Amber/Oranye khusus Ruang Rapat
+                    'title' => '🏢 ' . $item->nama_item,
+                    'start' => $item->waktu_mulai->toIso8601String(),
+                    'end'   => $item->waktu_selesai->toIso8601String(),
+                    'backgroundColor' => '#d97706', // Warna Amber/Oranye khusus Ruang Rapat
+                    // 💡 INJEKSI EXTENDED PROPS UNTUK TIPPY.JS
+                    'extendedProps' => [
+                        'keperluan' => $item->keperluan,
+                        'user'      => $item->user->username ?? 'Tidak Diketahui'
+                    ]
                 ];
             });
 
@@ -46,19 +56,18 @@ class PeminjamanAdminController extends Controller
     }
 
     public function updateStatus(Request $request, $id)
-{
-    $peminjaman = Peminjaman::findOrFail($id);
-    $peminjaman->update([
-        'status' => $request->status
-    ]);
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->update([
+            'status' => $request->status
+        ]);
 
-    // 💡 KIRIM NOTIFIKASI KE CUSTOMER YANG MENGAJUKAN
-    // Mengambil objek user berdasarkan user_id di data peminjaman
-    $customer = User::find($peminjaman->user_id);
-    if ($customer) {
-        $customer->notify(new StatusPeminjamanDiperbarui($peminjaman));
+        // KIRIM NOTIFIKASI KE CUSTOMER YANG MENGAJUKAN
+        $customer = User::find($peminjaman->user_id);
+        if ($customer) {
+            $customer->notify(new StatusPeminjamanDiperbarui($peminjaman));
+        }
+
+        return redirect()->back()->with('success', 'Status peminjaman berhasil diperbarui!');
     }
-
-    return redirect()->back()->with('success', 'Status peminjaman berhasil diperbarui!');
-}
 }

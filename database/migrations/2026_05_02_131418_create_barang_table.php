@@ -7,10 +7,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('barang', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->uuid('id')->primary(); // Atau $table->id();
             $table->string('nama_barang');
-            $table->integer('stock')->default(0);
             $table->string('satuan');
+            $table->integer('stock'); // Sesuai dengan perbaikan 'stock' sebelumnya
+            $table->string('gambar')->nullable(); // Menampung data gambar
             $table->timestamps();
         });
     }

@@ -6,6 +6,12 @@
 @source '../**/*.js';
 
 @theme {
+    /* 💡 WARNA BARU UNTUK DASHBOARD PREMIUM (PENYELARASAN) */
+    --color-bps-cream-bg: #fffbf7;
+    --color-bps-sidebar-dark: #1e293b;
+    --color-bps-orange-hover: #e06613;
+
+    /* Warna bawaan awalmu (Tetap dipertahankan agar halaman lain aman) */
     --color-bps-blue: #003d82;
     --color-bps-blue-light: #0056b3;
     --color-bps-blue-dark: #002a5c;

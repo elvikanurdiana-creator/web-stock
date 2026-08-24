@@ -26,8 +26,8 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-6">
             <div>
-                <h2 class="text-xl font-bold text-bps-blue-dark">Kalender Kesibukan / Jadwal Terisi {{ $jenis === 'mobil' ? 'Mobil Dinas' : 'Ruang Rapat' }}</h2>
-                <p class="text-xs text-gray-400">Silakan cek jadwal kosong sebelum mengisi form pengajuan di bawah</p>
+                <h2 class="text-xl font-semibold tracking-tight text-bps-blue-dark">Kalender Kesibukan / Jadwal Terisi {{ $jenis === 'mobil' ? 'Mobil Dinas' : 'Ruang Rapat' }}</h2>
+                <p class="text-sm text-gray-500">Silakan cek jadwal kosong sebelum mengisi form pengajuan di bawah</p>
             </div>
             <div class="flex items-center gap-2 text-xs">
                 <span class="w-3 h-3 rounded-full {{ $jenis === 'mobil' ? 'bg-sky-500' : 'bg-amber-500' }} inline-block"></span>
@@ -43,43 +43,89 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {{-- COLUMN 1: FORM PENGAJUAN --}}
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-fit">
-            <h2 class="text-lg font-bold text-bps-blue-dark mb-1">Form Pengajuan Peminjaman</h2>
-            <p class="text-xs text-gray-400 mb-6">Silakan isi detail reservasi {{ $jenis }} dinas</p>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-fit">
+    <h2 class="text-lg font-bold text-bps-blue-dark mb-1">Form Pengajuan Peminjaman</h2>
+    <p class="text-xs text-gray-400 mb-6">Silakan isi detail reservasi {{ $jenis }} dinas</p>
 
-            <form action="{{ route('customer.peminjaman.store') }}" method="POST" class="space-y-4">
-                @csrf
-                <input type="hidden" name="jenis_fasilitas" value="{{ $jenis }}">
+    <form action="{{ route('customer.peminjaman.store') }}" method="POST" class="space-y-4">
+        @csrf
+        <input type="hidden" name="jenis_fasilitas" value="{{ $jenis }}">
 
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama {{ ucfirst($jenis) }} / Aset</label>
-                    <input type="text" name="nama_item" required placeholder="Contoh: {{ $jenis === 'mobil' ? 'Avanza Plat L 1234 AB' : 'Ruang Rapat Utama Lt. 2' }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-bps-green">
-                </div>
+       <div>
+    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama {{ ucfirst($jenis) }}</label>
+    
+    <div class="relative flex items-center">
+        {{-- Dropdown select dengan gaya tema premium baru --}}
+        <select name="nama_item" required
+            class="w-full px-3 py-2.5 bg-white border @error('nama_item') border-red-500 @else border-slate-200 @enderror rounded-xl text-sm text-slate-800 appearance-none focus:outline-none focus:border-bps-blue focus:ring-4 focus:ring-bps-blue/10 transition-all cursor-pointer">
+            
+            <option value="" disabled selected hidden>— Pilih {{ ucfirst($jenis) }} —</option>
+            
+            {{-- Logika pilihan berdasarkan jenis --}}
+            @if($jenis === 'mobil')
+                {{-- Daftar Nomor Polisi Mobil Dinas --}}
+                <option value="L 38" {{ old('nama_item') == 'L 38' ? 'selected' : '' }}>L 38</option>
+                <option value="L 1760 HP" {{ old('nama_item') == 'L 1760 HP' ? 'selected' : '' }}>L 1760 HP</option>
+                <option value="L 1758 HP" {{ old('nama_item') == 'L 1758 HP' ? 'selected' : '' }}>L 1758 HP</option>
+                <option value="L 1759 HP" {{ old('nama_item') == 'L 1759 HP' ? 'selected' : '' }}>L 1759 HP</option>
+                <option value="B 1877 PQS" {{ old('nama_item') == 'B 1877 PQS' ? 'selected' : '' }}>B 1877 PQS</option>
+                <option value="B 1875 PQS" {{ old('nama_item') == 'B 1875 PQS' ? 'selected' : '' }}>B 1875 PQS</option>
+                <option value="S 3351 NP" {{ old('nama_item') == 'S 3351 NP' ? 'selected' : '' }}>S 3351 NP</option>
+                <option value="S 3346 NP" {{ old('nama_item') == 'S 3346 NP' ? 'selected' : '' }}>S 3346 NP</option>
+            @else
+                {{-- Daftar Ruangan BPS --}}
+                <option value="Ruang Vicon" {{ old('nama_item') == 'Ruang Vicon' ? 'selected' : '' }}>Ruang Vicon</option>
+                <option value="Ruang Aula Majapahit" {{ old('nama_item') == 'Ruang Aula Majapahit' ? 'selected' : '' }}>Ruang Aula Majapahit</option>
+            @endif
 
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Waktu Mulai</label>
-                    <input type="datetime-local" name="waktu_mulai" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-bps-green">
-                </div>
+        </select>
 
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Waktu Selesai</label>
-                    <input type="datetime-local" name="waktu_selesai" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-bps-green">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Keperluan / Agenda</label>
-                    <textarea name="keperluan" rows="3" placeholder="Tuliskan alasan peminjaman..."
-                        class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-bps-green"></textarea>
-                </div>
-
-                <button type="submit" class="w-full py-2.5 rounded-xl text-sm font-bold bg-bps-green hover:bg-green-700 text-white transition shadow-md cursor-pointer">
-                    Kirim Pengajuan
-                </button>
-            </form>
+        {{-- Icon panah kustom di sisi kanan --}}
+        <div class="absolute right-4 pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
         </div>
+    </div>
+
+    @error('nama_item')
+        <span class="text-xs text-red-500 font-semibold mt-1 block">{{ $message }}</span>
+    @enderror
+</div>
+
+        <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Waktu Mulai</label>
+            <input type="datetime-local" name="waktu_mulai" required value="{{ old('waktu_mulai') }}"
+                class="w-full px-3 py-2 border @error('waktu_mulai') border-red-500 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:border-bps-blue focus:ring-4 focus:ring-bps-blue/10">
+            @error('waktu_mulai')
+                <span class="text-xs text-red-500 font-semibold mt-1 block">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Waktu Selesai</label>
+            <input type="datetime-local" name="waktu_selesai" required value="{{ old('waktu_selesai') }}"
+                class="w-full px-3 py-2 border @error('waktu_selesai') border-red-500 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:border-bps-blue focus:ring-4 focus:ring-bps-blue/10">
+            {{-- 💡 ALERT ERROR SPESIFIK TANGGAL TERBALIK / BENTROK AKAN MUNCUL DI SINI --}}
+            @error('waktu_selesai')
+                <span class="text-xs text-red-500 font-semibold mt-1 block">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Keperluan / Agenda</label>
+            <textarea name="keperluan" rows="3" placeholder="Tuliskan alasan peminjaman..."
+                class="w-full px-3 py-2 border @error('keperluan') border-red-500 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:border-bps-blue focus:ring-4 focus:ring-bps-blue/10">{{ old('keperluan') }}</textarea>
+            @error('keperluan')
+                <span class="text-xs text-red-500 font-semibold mt-1 block">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-bps-blue to-bps-blue-dark hover:from-bps-blue-dark hover:to-bps-blue text-white transition shadow-[0_8px_24px_-12px_rgba(0,61,130,0.8)] cursor-pointer">
+            Kirim Pengajuan
+        </button>
+    </form>
+</div>
 
         {{-- COLUMN 2 & 3: RIWAYAT PENGAJUAN SAYA --}}
         <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">

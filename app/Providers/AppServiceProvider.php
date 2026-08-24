@@ -19,6 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Biarkan kosong atau biarkan sesuai kode asli bawaan Anda sebelumnya
     }
 }

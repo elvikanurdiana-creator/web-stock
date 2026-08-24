@@ -16,19 +16,19 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
             <div>
-                <h2 class="text-xl font-bold text-bps-blue-dark">Kalender Monitoring Jadwal Fasilitas</h2>
+                <h2 class="text-xl font-semibold tracking-tight text-bps-blue-dark">Kalender Monitoring Jadwal Fasilitas</h2>
                 <p class="text-xs text-gray-400">Filter dan pantau jadwal booking mobil dinas atau ruang rapat yang telah disetujui</p>
             </div>
             
             {{-- TOMBOL TAB FILTER --}}
             <div class="flex bg-gray-100 p-1 rounded-xl w-fit border border-gray-200">
-                <button onclick="switchCalendar('all')" id="btn-all" class="px-4 py-1.5 text-xs font-bold rounded-lg transition shadow-sm cursor-pointer bg-white text-bps-blue-dark">
+                <button onclick="switchCalendar('all')" id="btn-all" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition shadow-sm cursor-pointer bg-white text-bps-blue-dark">
                     Semua Fasilitas
                 </button>
-                <button onclick="switchCalendar('mobil')" id="btn-mobil" class="px-4 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer text-gray-500 hover:text-gray-700">
+                <button onclick="switchCalendar('mobil')" id="btn-mobil" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer text-gray-500 hover:text-gray-700">
                     Mobil Dinas
                 </button>
-                <button onclick="switchCalendar('ruang')" id="btn-ruang" class="px-4 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer text-gray-500 hover:text-gray-700">
+                <button onclick="switchCalendar('ruang')" id="btn-ruang" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer text-gray-500 hover:text-gray-700">
                     Ruang Rapat
                 </button>
             </div>
@@ -88,7 +88,7 @@
                                             @csrf
                                             @method('PATCH')
                                             <input type="hidden" name="status" value="disetujui">
-                                            <button type="submit" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition cursor-pointer">
+                                            <button type="submit" class="px-3 py-1.5 bg-gradient-to-r from-bps-blue to-bps-blue-dark hover:from-bps-blue-dark hover:to-bps-blue text-white text-xs font-semibold rounded-xl shadow-sm transition cursor-pointer">
                                                 Setuju
                                             </button>
                                         </form>
@@ -97,7 +97,7 @@
                                             @csrf
                                             @method('PATCH')
                                             <input type="hidden" name="status" value="ditolak">
-                                            <button type="submit" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-sm transition cursor-pointer">
+                                            <button type="submit" class="px-3 py-1.5 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-500 text-white text-xs font-semibold rounded-xl shadow-sm transition cursor-pointer">
                                                 Tolak
                                             </button>
                                         </form>
@@ -118,8 +118,13 @@
     </div>
 </div>
 
-{{-- SCRIPT INSTANS IASIONAL FULLCALENDAR DENGAN LOGIKA FILTER SWITCH --}}
+{{-- SCRIPT INSTANSIASIONAL FULLCALENDAR --}}
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+{{-- Library Tambahan Popper & Tippy untuk Hover Info Kustom --}}
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+
 <script>
     // Siapkan data array dari laravel ke javascript
     const dataMobil = {!! json_encode($jadwalMobil) !!};
@@ -151,6 +156,25 @@
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: false
+                },
+                // Integrasi Popover Tippy kustom pas kursor didekatkan
+                eventDidMount: function(info) {
+                    if (info.event.extendedProps.keperluan) {
+                        const namaUser = info.event.extendedProps.user || 'Tidak Diketahui';
+                        
+                        tippy(info.el, {
+                            content: `<div class="p-2 space-y-1.5 max-w-[280px] text-left">
+                                        <p class="font-bold border-b border-white/20 pb-1 text-amber-400 text-xs">📄 Rincian Kegiatan</p>
+                                        <p class="text-[11px] text-slate-200 font-medium"><strong>Pengguna:</strong> ${namaUser}</p>
+                                        <p class="text-[11px] leading-relaxed text-slate-100 font-medium whitespace-normal break-words"><strong>Keperluan:</strong> ${info.event.extendedProps.keperluan}</p>
+                                      </div>`,
+                            allowHTML: true,
+                            placement: 'top',
+                            theme: 'bps-dark',
+                            animation: 'scale',
+                            delay: [50, 0],
+                        });
+                    }
                 }
             });
             calendar.render();
@@ -186,8 +210,22 @@
 
 <style>
     .fc { font-family: inherit; }
-    .fc .fc-button-primary { background-color: #043264; border-color: #043264; }
+    .fc .fc-button-primary { background-color: #043264; border-color: #043264; font-size: 11px; font-weight: 600; text-transform: capitalize; border-radius: 8px; padding: 6px 12px; }
     .fc .fc-button-primary:hover { background-color: #05417c; border-color: #05417c; }
-    .fc-event { border-radius: 6px; padding: 2px 4px; font-size: 0.75rem; border: none !important; }
+    .fc .fc-button-primary:disabled { background-color: #94a3b8; border-color: #94a3b8; }
+    .fc-event { border-radius: 6px; padding: 3px 6px; font-size: 11px; border: none !important; font-weight: 500; cursor: pointer; }
+    .fc .fc-toolbar-title { font-size: 16px; font-weight: 700; color: #043264; text-transform: capitalize; }
+
+    /* Desain Balon Tooltip Tippy.js */
+    .tippy-box[data-theme~='bps-dark'] {
+        background-color: #043264;
+        color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .tippy-box[data-theme~='bps-dark'] .tippy-arrow {
+        color: #043264;
+    }
 </style>
 @endsection
